@@ -9,18 +9,10 @@ import (
 )
 
 func main() {
-	commands := map[string]functions.CliCommand{
-		"exit": {
-			Name:        "exit",
-			Description: "Exit the Pokedex",
-			Callback:    functions.ExitCommand,
-		},
-		"help": {
-			Name:        "help",
-			Description: "Displays a help message",
-			Callback:    functions.HelpCommand,
-		},
+	cfg := &functions.Config{
+		Commands: functions.Commands, // Set Commands here
 	}
+
 	fmt.Printf("Welcome to the Pokedex!\n")
 	ioReader := bufio.NewReader(os.Stdin)
 	buffer := bufio.NewScanner(ioReader)
@@ -34,14 +26,14 @@ func main() {
 		commandName := textTrimmed[0]
 
 		// Check if the command exists
-		command, exists := commands[commandName]
+		command, exists := functions.Commands[commandName] // Access Commands via Config
 		if !exists {
 			fmt.Printf("Unknown command: %s\n", commandName)
 			continue
 		}
 
-		// Execute the command
-		if err := command.Callback(commands); err != nil {
+		// Execute the command, passing Config (which includes Commands)
+		if err := command.Callback(cfg); err != nil {
 			fmt.Printf("Error executing command '%s': %v\n", commandName, err)
 		}
 	}
