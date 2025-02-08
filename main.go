@@ -1,9 +1,10 @@
 package main
 
 import (
-"fmt"
+	"fmt"
+	_ "github.com/grahamchill/pokedex/functions"
 )
 
-func main(){
+func main() {
 	fmt.Printf("Hello, World!")
 }
