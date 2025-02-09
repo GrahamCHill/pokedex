@@ -1,7 +1,7 @@
 package tests
 
 import (
-	"github.com/grahamchill/pokedex/functions"
+	"github.com/grahamchill/pokedex/internal/functions"
 	"testing"
 )
 
@@ -11,31 +11,34 @@ func TestCleanInput(t *testing.T) {
 		expected []string
 	}{
 		{
+			input:    "  ",
+			expected: []string{},
+		},
+		{
+			input:    "  hello  ",
+			expected: []string{"hello"},
+		},
+		{
 			input:    "  hello  world  ",
 			expected: []string{"hello", "world"},
 		},
 		{
-			input:    "  Apple  Sauce  is  Wonderful  ",
-			expected: []string{"Apple", "Sauce", "is", "Wonderful"},
-		},
-		{
-			input:    "  Mango  relish   ",
-			expected: []string{"Mango", "relish"},
+			input:    "  HellO  World  ",
+			expected: []string{"hello", "world"},
 		},
 	}
 
 	for _, c := range cases {
 		actual := functions.CleanInput(c.input)
-		// Check the length of the actual slice
 		if len(actual) != len(c.expected) {
-			t.Errorf("Length does not match. Expected: %d, Actual: %d", len(c.expected), len(actual))
+			t.Errorf("lengths don't match: '%v' vs '%v'", actual, c.expected)
+			continue
 		}
-		// Check each word in the slice
 		for i := range actual {
 			word := actual[i]
 			expectedWord := c.expected[i]
 			if word != expectedWord {
-				t.Errorf("Words do not match. Expected: %v, Actual: %v", expectedWord, word)
+				t.Errorf("cleanInput(%v) == %v, expected %v", c.input, actual, c.expected)
 			}
 		}
 	}
