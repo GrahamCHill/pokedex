@@ -27,10 +27,14 @@ func StartRepl(cfg *Config) {
 		}
 
 		commandName := words[0]
+		var args []string
+		if len(words) > 1 {
+			args = words[1:]
+		}
 
 		command, exists := getCommands()[commandName]
 		if exists {
-			err := command.callback(cfg)
+			err := command.callback(cfg, args...)
 			if err != nil {
 				fmt.Println(err)
 			}
@@ -51,7 +55,7 @@ func CleanInput(text string) []string {
 type cliCommand struct {
 	name        string
 	description string
-	callback    func(*Config) error
+	callback    func(*Config, ...string) error
 }
 
 func getCommands() map[string]cliCommand {
@@ -60,6 +64,11 @@ func getCommands() map[string]cliCommand {
 			name:        "help",
 			description: "Displays a help message",
 			callback:    CommandHelp,
+		},
+		"explore": {
+			name:        "explore <location_name>",
+			description: "Explore a specific location and display the Pokemon",
+			callback:    CommandExplore,
 		},
 		"map": {
 			name:        "map",
