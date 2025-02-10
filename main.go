@@ -9,6 +9,7 @@ import (
 func main() {
 	pokeClient := pokeapi.NewClient(5*time.Second, time.Minute*5)
 	cfg := &functions.Config{
+		CaughtPokemon: map[string]pokeapi.Pokemon{},
 		PokeapiClient: pokeClient,
 	}
 

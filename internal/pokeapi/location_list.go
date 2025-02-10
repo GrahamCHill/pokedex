@@ -6,9 +6,19 @@ import (
 	"net/http"
 )
 
+type LocationAreaDetail struct {
+	PokemonEncounters []struct {
+		Pokemon struct {
+			Name string `json:"name"`
+		} `json:"pokemon"`
+	} `json:"pokemon_encounters"`
+}
+
+// baseURL = "https://pokeapi.co/api/v2"
+
 // ListLocations -
 func (c *Client) ListLocations(pageURL *string) (RespShallowLocations, error) {
-	url := baseURL + "/location-area"
+	url := BaseURL + "/location-area"
 	if pageURL != nil {
 		url = *pageURL
 	}
@@ -54,17 +64,9 @@ func (c *Client) ListLocations(pageURL *string) (RespShallowLocations, error) {
 	return locationsResp, nil
 }
 
-type LocationAreaDetail struct {
-	PokemonEncounters []struct {
-		Pokemon struct {
-			Name string `json:"name"`
-		} `json:"pokemon"`
-	} `json:"pokemon_encounters"`
-}
-
 // GetLocation - ListPokemon fetches Pokémon in a specific area.
 func (c *Client) GetLocation(locationName string) (Location, error) {
-	url := baseURL + "/location-area/" + locationName
+	url := BaseURL + "/location-area/" + locationName
 
 	if val, ok := c.cache.Get(url); ok {
 		locationResp := Location{}
@@ -84,7 +86,12 @@ func (c *Client) GetLocation(locationName string) (Location, error) {
 	if err != nil {
 		return Location{}, err
 	}
-	defer resp.Body.Close()
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			return
+		}
+	}(resp.Body)
 
 	dat, err := io.ReadAll(resp.Body)
 	if err != nil {

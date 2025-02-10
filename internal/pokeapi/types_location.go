@@ -1,6 +1,6 @@
 package pokeapi
 
-// RespShallowLocations -
+// RespShallowLocations - no info besides name on location
 type RespShallowLocations struct {
 	Count    int     `json:"count"`
 	Next     *string `json:"next"`
@@ -11,7 +11,7 @@ type RespShallowLocations struct {
 	} `json:"results"`
 }
 
-// Location -
+// Location - information on specific location
 type Location struct {
 	EncounterMethodRates []struct {
 		EncounterMethod struct {
